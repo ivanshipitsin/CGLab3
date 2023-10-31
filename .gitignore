@@ -32,3 +32,8 @@ build/CMakeFiles/graph.dir/flags.make
 build/CMakeFiles/graph.dir/link.txt
 build/CMakeFiles/graph.dir/progress.make
 .DS_Store
+.vscode/c_cpp_properties.json
+build/.cmake/api/v1/reply/cmakeFiles-v1-a0fc517f835c59d15c22.json
+build/.cmake/api/v1/reply/codemodel-v2-569a06bc14d302bd13d8.json
+build/.cmake/api/v1/reply/index-2023-10-31T17-06-29-0554.json
+build/.cmake/api/v1/reply/target-graph-Debug-ca4358ebc9b824b5f38e.json

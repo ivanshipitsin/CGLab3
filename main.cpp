@@ -3,10 +3,9 @@
 #include <Magick++.h>
 #include "graphics.hpp"
 #include "geometry.hpp"
-#include "curve.hpp"
 #include "geom_object.hpp"
 #include <glm/glm.hpp>
-#include <math.h>
+#include <cmath>
 
 void bresenham_wa(glm::ivec2 start, glm::ivec2 end, Magick::Image & img, Magick::Color const & col) {
     int dy = std::abs(end.y - start.y);
@@ -277,20 +276,11 @@ int main(int argc, char* argv[])
         norm_i /= glm::length(norm_i);
         cuboid.norm_buffer[i] = norm_i;
     }
+
     const uint32_t count_frame = 60;
-
-    std::vector<Magick::Image> frames;
-
-    for(int i = 0; i < count_frame; i++)
-    {
-        frames.emplace_back(Magick::Image("300x300", "white"));
+    std::vector<Magick::Image> frames(count_frame, Magick::Image("300x300", "white"));
         
-    }
-    
-
-    
     vertex_transform(cuboid);
-    // auto res = ortho_projection(cuboid);
     auto res = perspective_projection(cuboid);
     delete_edge(res, cuboid);
     viewport(res, 300, 300);
@@ -300,7 +290,6 @@ int main(int argc, char* argv[])
     for(int i = 1; i < count_frame; i++)
     {
         vertex_transform_animation(cuboid);
-        // auto res = ortho_projection(cuboid);
         auto res = perspective_projection(cuboid);
         delete_edge(res, cuboid);
         viewport(res, 300, 300);
