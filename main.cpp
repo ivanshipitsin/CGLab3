@@ -133,7 +133,7 @@ void filled_polygon_nzw(polygon const& p, Magick::Image &img, Magick::Color cons
 }
 
 void vertex_transform(geom_object & obj){
-    glm::mat4 transform = /*get_id_mat();*/get_rotate_x_mat(M_PI / 6.);
+    glm::mat4 transform = get_id_mat();
     std::for_each(obj.vertex_buffer.begin(), obj.vertex_buffer.end(), [&transform](glm::vec4 & value){ value = transform * value;});
     std::for_each(obj.norm_buffer.begin(), obj.norm_buffer.end(), [&transform](glm::vec4 & value){ value = transform * value;});
 }
@@ -223,7 +223,6 @@ void rasterizetion(geom_object2 const& obj, Magick::Image & img, Magick::Color c
         {
             bresenham_wa(obj.vertex_buffer[face[i]], obj.vertex_buffer[face[(i+1)%3]], img, col);
         }
-        // std::cout << "plot" << std::endl;
     }
 }
 
@@ -278,49 +277,43 @@ int main(int argc, char* argv[])
         norm_i /= glm::length(norm_i);
         cuboid.norm_buffer[i] = norm_i;
     }
-    // const uint32_t count_frame = 60;
+    const uint32_t count_frame = 60;
 
-    // std::vector<Magick::Image> frames;
+    std::vector<Magick::Image> frames;
 
-    // for(int i = 0; i < count_frame; i++)
-    // {
-    //     frames.emplace_back(Magick::Image("300x300", "white"));
-    //     // frames[i].animationDelay(10);
-    // }
-    Magick::Image img("300x300", "white");
+    for(int i = 0; i < count_frame; i++)
+    {
+        frames.emplace_back(Magick::Image("300x300", "white"));
+        
+    }
+    
 
-    // std::vector<std::vector<int32_t> > z_buffer(300, std::vector(300, -1));
+    
     vertex_transform(cuboid);
     // auto res = ortho_projection(cuboid);
     auto res = perspective_projection(cuboid);
     delete_edge(res, cuboid);
     viewport(res, 300, 300);
-    // rasterizetion(res, frames[0], Magick::Color(0, 0, 0));
-    rasterizetion(res, img, Magick::Color(0, 0, 0));
+    rasterizetion(res, frames[0], Magick::Color(0, 0, 0));
+    
 
-    // for(int i = 1; i < count_frame; i++)
-    // {
-    //     vertex_transform_animation(cuboid);
-    //     // auto res = ortho_projection(cuboid);
-    //     auto res = perspective_projection(cuboid);
-    //     delete_edge(res, cuboid);
-    //     viewport(res, 300, 300);
-    //     rasterizetion(res, frames[i], Magick::Color(0, 0, 0));
-    // }
+    for(int i = 1; i < count_frame; i++)
+    {
+        vertex_transform_animation(cuboid);
+        // auto res = ortho_projection(cuboid);
+        auto res = perspective_projection(cuboid);
+        delete_edge(res, cuboid);
+        viewport(res, 300, 300);
+        rasterizetion(res, frames[i], Magick::Color(0, 0, 0));
+    }
 
 
-    // bresenham_wa(glm::ivec2{299,10}, glm::ivec2{0,0}, img, Magick::Color(0 , (2<<16) - 1, 0));
+    for(auto & elem:frames)
+    {
+        elem.flip();
+        elem.animationDelay(1);
+    }
 
-    // for(auto & elem:frames)
-    // {
-    //     elem.flip();
-    //     elem.animationDelay(1);
-    // }
-
-    // Magick::writeImages(frames.begin(), frames.end(), argv[1]);
-
-    img.flip();
-    img.magick("png");
-    img.write(argv[1]);
+    Magick::writeImages(frames.begin(), frames.end(), argv[1]);
     return 0;
 }
